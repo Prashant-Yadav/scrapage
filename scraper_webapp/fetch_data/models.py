@@ -1,7 +1,13 @@
 from django.db import models
 
-# Create your models here.
 
+# model class to store link of the page to be scraped, it should be filled through user 
+# submission at fetch_data app....
+class ScrapWebpage(models.Model):
+	name = models.CharField(max_length=70)		#stores name of the webpage, which is usually the title
+	page_url = models.URLField()				#stores url of webpage to be scraped
+
+# model to store data which are scraped from the specified webapage
 class Webpage(models.Model):
 	#name = models.CharField(max_length=50)			
 	title = models.CharField(max_length=70)			#stores title of webpage
