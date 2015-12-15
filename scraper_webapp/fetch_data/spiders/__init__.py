@@ -4,25 +4,22 @@
 # your spiders.
 from twisted.internet import reactor
 import scrapy
-from scrapy.crawler import CrawlerRunner
-from scrapy.utils.log import configure_logging
+from scrapy.utils.project import get_project_settings
 from fetch_data.items import WebpageScraperItem
+
+#from models import ScrapWebpage
 
 class MySpider(scrapy.Spider):
     # Your spider definition
     name="fetch_data"
-    start_urls = ['https://wikimediafoundation.org/wiki/Home']
+
+    def __init__(self, *args, **kwargs):
+    	super(MySpider, self).__init__(*args, **kwargs)
+        self.start_urls = [kwargs.get('start_url')]
 
     def parse(self, response):
     	item = WebpageScraperItem()
     	item['title'] = response.xpath('//title/text()').extract()
     	item['paragraphs'] = response.xpath('//p/text()').extract()
     	item['headings'] = response.xpath('//h1/text()').extract()
-    	yield item
-
-#configure_logging({'LOG_FORMAT': '%(levelname)s: %(message)s'})
-#runner = CrawlerRunner()
-
-#d = runner.crawl(MySpider)
-#d.addBoth(lambda _: reactor.stop())
-#reactor.run() # the script will block here until the crawling is finished
+    	return item

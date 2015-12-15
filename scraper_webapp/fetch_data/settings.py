@@ -68,10 +68,15 @@ NEWSPIDER_MODULE = 'fetch_data.spiders'
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'webpage_scraper.pipelines.SomePipeline': 300,
-#}
+ITEM_PIPELINES = {
+	#'fetch_data.pipelines.MyExporter': 200,
+    'fetch_data.pipelines.JsonWriterPipeline': 200,
+    #'fetch_data.pipelines.WebpageScraperPipeline': 300,
+}
 
+#FEED_URI = 'file: /files/'
+
+#FEED_FORMAT = 'jsonlines'
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 # NOTE: AutoThrottle will honour the standard settings for concurrency and delay
