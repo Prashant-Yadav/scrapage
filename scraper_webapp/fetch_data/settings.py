@@ -70,8 +70,8 @@ NEWSPIDER_MODULE = 'fetch_data.spiders'
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
 	#'fetch_data.pipelines.MyExporter': 200,
-    'fetch_data.pipelines.JsonWriterPipeline': 200,
-    #'fetch_data.pipelines.WebpageScraperPipeline': 300,
+    #'fetch_data.pipelines.JsonWriterPipeline': 200,
+    'fetch_data.pipelines.JsonLinesExportPipeline': 300,
 }
 
 #FEED_URI = 'file: /files/'

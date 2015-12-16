@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from subprocess import call
+from django.http import HttpResponse
 import os
+import json
 
 from .forms import URLForm
 from spiders import MySpider
@@ -17,11 +17,13 @@ def get_url(request):
 		if form.is_valid():
 			form.save()
 			url = form.cleaned_data['page_url']
-			#spider = MySpider(url)
-			#spider.runCrawler()
-			#call(["scrapy", "crawl", "spider", "-o", "output.json"])
-			os.system("scrapy crawl fetch_data -a start_url="+url+" -o output-lorel.json")
-			return render(request, 'fetch_data/get_url.html')
+			os.system("scrapy crawl fetch_data -a start_url="+url)
+			data = json.loads(open('fetch_data_something.json').read())
+			title = data['title']
+			headings = data['headings']
+			links = data['links']
+			paragraphs = data['paragraphs']
+			return render(request, 'fetch_data/get_url.html', { 'title':title, 'headings':headings, 'links':links, 'paragraphs':paragraphs, })
 
 	return  HttpResponse("Form submission failed.")
 	#else:
