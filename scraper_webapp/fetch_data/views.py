@@ -41,7 +41,8 @@ class DownloadsView(generic.TemplateView):
 	template_name = 'fetch_data/downloads.html'
 
 
-def generate_text_files(request):
+def generate_text_file():
+	# This method generates a text file which will be provided to user
 	data = json.loads(open('fetch_data_items.json').read())
 	title = data['title']
 	headings = data['headings']
@@ -67,7 +68,11 @@ def generate_text_files(request):
 			i+=1
 			f.write(str(i)+". "+l+"\n")
 
-	filename = 'content.txt' # Select your file here.                                
+	return 'content.txt'
+
+
+def download_text_files(request):
+	filename = generate_text_file()
 	wrapper = FileWrapper(file(filename))
 	response = HttpResponse(wrapper, content_type='text/plain')
 	response['Content-Disposition'] = 'attachment; filename=content.txt'
@@ -111,4 +116,32 @@ def download_images(request):
 	resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
 
 	return resp
+
+
+def download_all_files(request):
+	textfile = generate_text_file()
+	#temp = tempfile.TemporaryFile()
+	zip_subdir = "images"
+	zip_filename = "files.zip"
+
+	s = StringIO()
+	archive = zipfile.ZipFile(s, 'w')
 	
+	archive.write(textfile, textfile)
+
+	imagefiles = []
+	for fn in os.listdir("files/images/full"):
+		imagefiles.append("files/images/full/"+fn)
+	
+	for imagefile in imagefiles:
+		fdir, fname = os.path.split(imagefile)
+		zip_path = os.path.join(zip_subdir, fname)
+
+		archive.write(imagefile, zip_path)
+
+	archive.close()
+	#wrapper = FileWrapper(s)
+	response = HttpResponse(s.getvalue(), content_type='application/zip')
+	response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
+
+	return response
