@@ -1,16 +1,19 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+
 import os
 import json
 import tempfile
 import zipfile
+from cStringIO import StringIO
+
+from django.shortcuts import render
+from django.http import HttpResponse
 from django.views import generic
 from django.core.servers.basehttp import FileWrapper
-
 
 from .forms import URLForm
 from spiders import MySpider
 from .models import Webpage
+
 
 
 def index(request):	
@@ -36,6 +39,7 @@ def get_url(request):
 	
 class DownloadsView(generic.TemplateView):
 	template_name = 'fetch_data/downloads.html'
+
 
 def generate_text_files(request):
 	data = json.loads(open('fetch_data_items.json').read())
@@ -68,7 +72,43 @@ def generate_text_files(request):
 	response = HttpResponse(wrapper, content_type='text/plain')
 	response['Content-Disposition'] = 'attachment; filename=content.txt'
 	response['Content-Length'] = os.path.getsize(filename)
+	
 	return response
 
-def dowload_images(request):
+
+def download_images(request):
+	filenames = []
+
+	for fn in os.listdir("files/images/full"):
+	    filenames.append("files/images/full/"+fn)
+
+	# Folder name in ZIP archive which contains the above files
+	# E.g [thearchive.zip]/somefiles/file2.txt
+	# FIXME: Set this to something better
+	zip_subdir = "images"
+	zip_filename = "%s.zip" % zip_subdir
+
+	# Open StringIO to grab in-memory ZIP contents
+	s = StringIO()
+
+	# The zip compressor
+	zf = zipfile.ZipFile(s, "w")
+
+	for fpath in filenames:
+	    # Calculate path for file in zip
+	    fdir, fname = os.path.split(fpath)
+	    zip_path = os.path.join(zip_subdir, fname)
+
+	    # Add file, at correct path
+	    zf.write(fpath, zip_path)
+
+	# Must close zip for all contents to be written
+	zf.close()
+
+	# Grab ZIP file from in-memory, make response with correct MIME-type
+	resp = HttpResponse(s.getvalue(), content_type = "application/zip")
+	# ..and correct content-disposition
+	resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
+
+	return resp
 	
