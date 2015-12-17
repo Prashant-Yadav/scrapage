@@ -72,7 +72,15 @@ ITEM_PIPELINES = {
 	#'fetch_data.pipelines.MyExporter': 200,
     #'fetch_data.pipelines.JsonWriterPipeline': 200,
     'fetch_data.pipelines.JsonLinesExportPipeline': 300,
+    'scrapy.pipelines.images.ImagesPipeline': 1
 }
+
+IMAGES_STORE = 'files/images'
+
+IMAGES_THUMBS = {
+				    'small': (50, 50),
+				    'big': (270, 270),
+				}
 
 #FEED_URI = 'file: /files/'
 

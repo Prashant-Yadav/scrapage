@@ -60,7 +60,7 @@
 
                     <!--This link left, for further insertion of links.-->
                     <li>
-                        <a class="page-scroll" href="#services">Download</a>
+                        <a class="page-scroll" href="{% url 'fetch_data:downloads' %}">Download</a>
                     </li>
                 </ul>
             </div>
@@ -72,22 +72,24 @@
 	<section id="services">
 		<div class="container">
 			<h1>Webpage details are:</h1>
+			
 			<h6>Page title:  {{ title }}</h6>
+			
 			<h6>Page header: {{ headings }}</h6>
+			
+			<p>Pragraphs:</p>
+				{% for paragraph in paragraphs %}
+				<p> {{ paragraph }} </p>
+				{% endfor %}
+			
 			<p>List of links:</p>
 			<ul>
 				{% for link in links %}
 				<li> <a href="{{ link }}">{{ link }}</a> </li>
 				{% endfor %}
 			</ul>
-
-			<p>Pragraphs:</p>
-			{% for paragraph in paragraphs %}
-			<p> {{ paragraph }} </p>
-			{% endfor %}}
 		</div>
 	</section>
 	
-
 </body>
 </html>

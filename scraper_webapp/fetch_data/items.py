@@ -14,3 +14,5 @@ class WebpageScraperItem(scrapy.Item):
     paragraphs = scrapy.Field()
     links = scrapy.Field()
     headings = scrapy.Field()
+    image_urls = scrapy.Field()
+    images = scrapy.Field()

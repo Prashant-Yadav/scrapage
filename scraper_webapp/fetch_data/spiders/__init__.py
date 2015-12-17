@@ -27,4 +27,5 @@ class MySpider(scrapy.Spider):
     	item['headings'] = response.xpath('//h1/text()').extract()
         links = self.link_extractor.extract_links(response)
         item['links'] = [x.url for x in links]
+        item['image_urls'] = response.xpath('//img/@src').extract()
     	return item
