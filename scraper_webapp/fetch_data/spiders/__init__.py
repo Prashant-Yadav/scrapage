@@ -19,9 +19,11 @@ class MySpider(scrapy.Spider):
     	super(MySpider, self).__init__(*args, **kwargs)
         self.start_urls = [kwargs.get('start_url')]
         self.link_extractor = LinkExtractor()
+        urls = self.start_urls
 
     def parse(self, response):
     	item = WebpageScraperItem()
+        item['key'] = self.start_urls
     	item['title'] = response.xpath('//title/text()').extract()
     	item['paragraphs'] = response.xpath('//p/text()').extract()
     	item['headings'] = response.xpath('//h1/text()').extract()

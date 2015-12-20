@@ -26,19 +26,26 @@ def get_url(request):
 		if form.is_valid():
 			form.save()
 			url = form.cleaned_data['page_url']
-			os.system("scrapy crawl fetch_data -a start_url="+url)
+			conf_url = change_url(url)
+			os.system("scrapy crawl fetch_data -a start_url="+url+" -s IMAGES_STORE='files/images/"+conf_url+"'")
 			data = json.loads(open('fetch_data_items.json').read())
 			title = data['title']
 			headings = data['headings']
 			links = data['links']
 			paragraphs = data['paragraphs']
-			return render(request, 'fetch_data/get_url.html', { 'title':title, 'headings':headings, 'links':links, 'paragraphs':paragraphs, })
+			return render(request, 'fetch_data/get_url.html', { 
+																'page_url':conf_url, 
+																'title':title, 
+																'headings':headings, 
+																'links':links, 
+																'paragraphs':paragraphs, 
+																})
 
 	return  HttpResponse("Form submission failed.")
 
 	
-class DownloadsView(generic.TemplateView):
-	template_name = 'fetch_data/downloads.html'
+def downloads(request, page_url):
+	return render(request, 'fetch_data/downloads.html', { 'page_url' :page_url })
 
 
 def generate_text_file():
@@ -52,26 +59,30 @@ def generate_text_file():
 	with open('content.txt', 'w') as f:
 		f.write("Page title: \n")
 		for t in title:
+			t.encode("utf8")
 			f.write(t+"\n")
 		
 		f.write("\nPage headings: \n")
 		for heading in headings:
+			heading.encode("utf8")
 			f.write(heading+"\n")
 		
 		f.write("\nParagraphs: \n")
 		for para in paragraphs:
+			para.encode("utf8")
 			f.write(para+"\n")
 		
 		i = 0
 		f.write("\nLinks: \n")
 		for l in links:
 			i+=1
+			l.encode("utf8")
 			f.write(str(i)+". "+l+"\n")
 
 	return 'content.txt'
 
 
-def download_text_files(request):
+def download_text_files(request, page_url):
 	filename = generate_text_file()
 	wrapper = FileWrapper(file(filename))
 	response = HttpResponse(wrapper, content_type='text/plain')
@@ -81,11 +92,11 @@ def download_text_files(request):
 	return response
 
 
-def download_images(request):
+def download_images(request, page_url):
 	filenames = []
-
-	for fn in os.listdir("files/images/full"):
-	    filenames.append("files/images/full/"+fn)
+	#conf_url = change_url(url)
+	for fn in os.listdir("files/images/"+page_url+"/full/"):
+	    filenames.append("files/images/"+page_url+"/full/"+fn)
 
 	# Folder name in ZIP archive which contains the above files
 	# E.g [thearchive.zip]/somefiles/file2.txt
@@ -118,8 +129,9 @@ def download_images(request):
 	return resp
 
 
-def download_all_files(request):
+def download_all_files(request, page_url):
 	textfile = generate_text_file()
+	#conf_url = change_url(url)
 	#temp = tempfile.TemporaryFile()
 	zip_subdir = "images"
 	zip_filename = "files.zip"
@@ -130,8 +142,8 @@ def download_all_files(request):
 	archive.write(textfile, textfile)
 
 	imagefiles = []
-	for fn in os.listdir("files/images/full"):
-		imagefiles.append("files/images/full/"+fn)
+	for fn in os.listdir("files/images/"+page_url+"/full/"):
+	    imagefiles.append("files/images/"+page_url+"/full/"+fn)
 	
 	for imagefile in imagefiles:
 		fdir, fname = os.path.split(imagefile)
@@ -145,3 +157,11 @@ def download_all_files(request):
 	response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
 
 	return response
+
+
+def change_url(url):
+	# change the url to be replaced as directory name for storing images.
+	# now files can be differentiate on the basis of this parameter
+	# mapping this parameter with actual url will give proper information about file.
+	url1 = url.replace("/", "_").replace(":", "_").replace(".", "_").replace("?", "_")
+	return url1

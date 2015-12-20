@@ -9,6 +9,7 @@ import scrapy
 
 #This model will be used to hold the data scraped from webpages
 class WebpageScraperItem(scrapy.Item):
+    key = scrapy.Field()			# key will store url of page to uniquely identify the page.
     title = scrapy.Field()
     #url = scrapy.Field()
     paragraphs = scrapy.Field()

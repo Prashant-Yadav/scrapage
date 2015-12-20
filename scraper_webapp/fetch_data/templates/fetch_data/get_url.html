@@ -60,7 +60,7 @@
 
                     <!--This link left, for further insertion of links.-->
                     <li>
-                        <a class="page-scroll" href="{% url 'fetch_data:downloads' %}">Download</a>
+                        <a class="page-scroll" href="{% url 'fetch_data:downloads' page_url %}">Download</a>
                     </li>
                 </ul>
             </div>
@@ -73,6 +73,8 @@
 		<div class="container">
 			<h1>Webpage details are:</h1>
 			
+			<h6>Page Url:  {{ page_url }}</h6>
+
 			<h6>Page title:  {{ title }}</h6>
 			
 			<h6>Page header: {{ headings }}</h6>

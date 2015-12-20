@@ -72,7 +72,7 @@
                         <div class="col-6 col-sm-6 col-lg-4">
                             <h2>Download text files</h2>
                             <p>
-                                <a href="{% url 'fetch_data:download_text_files' %}" class="btn btn-primary" role="button"> Download </a>
+                                <a href="{% url 'fetch_data:download_text_files' page_url %}" class="btn btn-primary" role="button"> Download </a>
                             </p>
                         </div>
 
@@ -80,7 +80,7 @@
                             <h2>Download images</h2>
                             <p>Download images in a zip file</p>
                             <p>
-                                <a href="{% url 'fetch_data:download_images' %}" class="btn btn-primary" role="button"> Download </a>
+                                <a href="{% url 'fetch_data:download_images' page_url %}" class="btn btn-primary" role="button"> Download </a>
                             </p>
                         </div>
 
@@ -88,7 +88,7 @@
                             <h2>Download everything</h2>
                             <p>Download whole data in a zip file (including text files, images, thumbnails)</p>
                             <p>
-                                <a href="{% url 'fetch_data:download_all_files' %}" class="btn btn-primary" role="button"> Download </a>
+                                <a href="{% url 'fetch_data:download_all_files' page_url %}" class="btn btn-primary" role="button"> Download </a>
                             </p>
                         </div>
                     </div>
