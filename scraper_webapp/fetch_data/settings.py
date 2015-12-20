@@ -69,8 +69,6 @@ NEWSPIDER_MODULE = 'fetch_data.spiders'
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-	#'fetch_data.pipelines.MyExporter': 200,
-    #'fetch_data.pipelines.JsonWriterPipeline': 200,
     'fetch_data.pipelines.JsonLinesExportPipeline': 300,
     'scrapy.pipelines.images.ImagesPipeline': 1
 }

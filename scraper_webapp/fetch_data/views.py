@@ -27,12 +27,15 @@ def get_url(request):
 			form.save()
 			url = form.cleaned_data['page_url']
 			conf_url = change_url(url)
+			
 			os.system("scrapy crawl fetch_data -a start_url="+url+" -s IMAGES_STORE='files/images/"+conf_url+"'")
+			
 			data = json.loads(open('fetch_data_items.json').read())
 			title = data['title']
 			headings = data['headings']
 			links = data['links']
 			paragraphs = data['paragraphs']
+			
 			return render(request, 'fetch_data/get_url.html', { 
 																'page_url':conf_url, 
 																'title':title, 
@@ -94,13 +97,10 @@ def download_text_files(request, page_url):
 
 def download_images(request, page_url):
 	filenames = []
-	#conf_url = change_url(url)
 	for fn in os.listdir("files/images/"+page_url+"/full/"):
 	    filenames.append("files/images/"+page_url+"/full/"+fn)
 
 	# Folder name in ZIP archive which contains the above files
-	# E.g [thearchive.zip]/somefiles/file2.txt
-	# FIXME: Set this to something better
 	zip_subdir = "images"
 	zip_filename = "%s.zip" % zip_subdir
 
@@ -131,8 +131,6 @@ def download_images(request, page_url):
 
 def download_all_files(request, page_url):
 	textfile = generate_text_file()
-	#conf_url = change_url(url)
-	#temp = tempfile.TemporaryFile()
 	zip_subdir = "images"
 	zip_filename = "files.zip"
 
@@ -152,7 +150,6 @@ def download_all_files(request, page_url):
 		archive.write(imagefile, zip_path)
 
 	archive.close()
-	#wrapper = FileWrapper(s)
 	response = HttpResponse(s.getvalue(), content_type='application/zip')
 	response['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
 

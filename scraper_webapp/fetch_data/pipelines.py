@@ -5,7 +5,7 @@ import json
 
 from scrapy.xlib.pydispatch import dispatcher
 from scrapy import signals
-from scrapy.contrib.exporter import JsonItemExporter, JsonLinesItemExporter
+from scrapy.contrib.exporter import JsonLinesItemExporter
 
 
 class JsonLinesExportPipeline(object):
