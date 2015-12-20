@@ -1,2 +1,2 @@
-# scraper_webapp
-Webapp for scraping data from webpages
+# Scrapage
+Webapp to convert webpages into productive data
