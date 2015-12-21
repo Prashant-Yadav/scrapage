@@ -58,6 +58,9 @@
                     <li class="hidden">
                         <a href="#page-top"></a>
                     </li>
+                    <li>
+                        <a href="{% url 'fetch_data:index' %}"> Home </a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -95,6 +98,15 @@
                     </div>
                 </div>
             </div>
+
+            {% if os_error %}
+            <!--<div class="col-xs-12 col-sm-9">
+                <p>Can't download images.</p>
+            </div>-->
+            <script type="text/javascript">
+                alert("Can't download images");
+            </script>
+            {% endif %}
         </div>    
     </section>
     

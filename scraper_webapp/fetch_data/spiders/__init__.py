@@ -2,6 +2,7 @@
 #
 # Please refer to the documentation for information on how to create and manage
 # your spiders.
+import urlparse
 from twisted.internet import reactor
 
 import scrapy
@@ -23,11 +24,21 @@ class MySpider(scrapy.Spider):
 
     def parse(self, response):
     	item = WebpageScraperItem()
+        
         item['key'] = self.start_urls
     	item['title'] = response.xpath('//title/text()').extract()
     	item['paragraphs'] = response.xpath('//p/text()').extract()
     	item['headings'] = response.xpath('//h1/text()').extract()
+        
         links = self.link_extractor.extract_links(response)
         item['links'] = [x.url for x in links]
-        item['image_urls'] = response.xpath('//img/@src').extract()
-    	return item
+        
+        img_urls = []
+        img_url = response.xpath('//img/@src').extract()
+        for img in img_url:
+            parse_url = urlparse.urlparse(img)
+            parsed_url = parse_url._replace(**{"scheme":"http"})
+            img_urls.append(parsed_url.geturl())
+    	
+        item['image_urls'] = img_urls
+        return item

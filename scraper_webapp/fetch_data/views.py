@@ -48,7 +48,7 @@ def get_url(request):
 
 	
 def downloads(request, page_url):
-	return render(request, 'fetch_data/downloads.html', { 'page_url' :page_url })
+	return render(request, 'fetch_data/downloads.html', { 'page_url' :page_url, 'os_error':False })
 
 
 def generate_text_file():
@@ -62,25 +62,34 @@ def generate_text_file():
 	with open('content.txt', 'w') as f:
 		f.write("Page title: \n")
 		for t in title:
-			t.encode("utf8")
-			f.write(t+"\n")
+			try :
+				f.write(t+"\n")
+			except :
+				pass
 		
 		f.write("\nPage headings: \n")
 		for heading in headings:
-			heading.encode("utf8")
-			f.write(heading+"\n")
+			try :
+				f.write(heading+"\n")
+			except :
+				pass
 		
 		f.write("\nParagraphs: \n")
 		for para in paragraphs:
-			para.encode("utf8")
-			f.write(para+"\n")
+			try :
+				f.write(para+"\n")
+			except :
+				pass
 		
 		i = 0
 		f.write("\nLinks: \n")
 		for l in links:
 			i+=1
-			l.encode("utf8")
-			f.write(str(i)+". "+l+"\n")
+			try:
+				f.write(str(i)+". "+l+"\n")	
+			except :
+				pass
+			
 
 	return 'content.txt'
 
@@ -97,9 +106,14 @@ def download_text_files(request, page_url):
 
 def download_images(request, page_url):
 	filenames = []
-	for fn in os.listdir("files/images/"+page_url+"/full/"):
-	    filenames.append("files/images/"+page_url+"/full/"+fn)
-
+	try:
+		for fn in os.listdir("files/images/"+page_url+"/full/"):
+			filenames.append("files/images/"+page_url+"/full/"+fn)
+	except OSError:
+		# if images are not scraped, then their will also failed.
+		# this exception handler handles image donwload exceptions.
+		return render(request, 'fetch_data/downloads.html', { 'page_url' :page_url, 'os_error':True })
+ 
 	# Folder name in ZIP archive which contains the above files
 	zip_subdir = "images"
 	zip_filename = "%s.zip" % zip_subdir
@@ -139,15 +153,20 @@ def download_all_files(request, page_url):
 	
 	archive.write(textfile, textfile)
 
-	imagefiles = []
-	for fn in os.listdir("files/images/"+page_url+"/full/"):
-	    imagefiles.append("files/images/"+page_url+"/full/"+fn)
+	try:
+		imagefiles = []
+		for fn in os.listdir("files/images/"+page_url+"/full/"):
+			imagefiles.append("files/images/"+page_url+"/full/"+fn)
 	
-	for imagefile in imagefiles:
-		fdir, fname = os.path.split(imagefile)
-		zip_path = os.path.join(zip_subdir, fname)
+		for imagefile in imagefiles:
+			fdir, fname = os.path.split(imagefile)
+			zip_path = os.path.join(zip_subdir, fname)
 
-		archive.write(imagefile, zip_path)
+			archive.write(imagefile, zip_path)
+	except OSError:
+		# if images are not scraped, then their will also failed.
+		# this exception handler handles image donwload exceptions.
+		pass
 
 	archive.close()
 	response = HttpResponse(s.getvalue(), content_type='application/zip')
