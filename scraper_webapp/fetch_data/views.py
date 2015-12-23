@@ -154,6 +154,7 @@ def download_all_files(request, page_url):
 	archive.write(textfile, textfile)
 
 	try:
+		# download full images
 		imagefiles = []
 		for fn in os.listdir("files/images/"+page_url+"/full/"):
 			imagefiles.append("files/images/"+page_url+"/full/"+fn)
@@ -163,6 +164,31 @@ def download_all_files(request, page_url):
 			zip_path = os.path.join(zip_subdir, fname)
 
 			archive.write(imagefile, zip_path)
+
+		# code to download big thumbfiles
+		thumbbig = []
+		for fn in os.listdir("files/images/"+page_url+"/thumbs/big/"):
+			thumbbig.append("files/images/"+page_url+"/thumbs/big/"+fn)
+		
+		zip_subdir_thumb_big = zip_subdir + "/thumbs/big"
+		for thumbfile in thumbbig:
+			fdir, fname = os.path.split(thumbfile)
+			zip_path = os.path.join(zip_subdir_thumb_big, fname)
+
+			archive.write(thumbfile, zip_path)
+
+		# code to download small thumbfiles
+		thumbsmall = []
+		for fn in os.listdir("files/images/"+page_url+"/thumbs/small/"):
+			thumbsmall.append("files/images/"+page_url+"/thumbs/small/"+fn)
+		
+		zip_subdir_thumb_big = zip_subdir + "/thumbs/small"
+		for thumbfile in thumbsmall:
+			fdir, fname = os.path.split(thumbfile)
+			zip_path = os.path.join(zip_subdir_thumb_big, fname)
+
+			archive.write(thumbfile, zip_path)
+
 	except OSError:
 		# if images are not scraped, then their will also failed.
 		# this exception handler handles image donwload exceptions.
