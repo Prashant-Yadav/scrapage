@@ -17,6 +17,6 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^fetch_data/', include('fetch_data.urls', namespace='fetch_data')), 
+    url(r'^', include('fetch_data.urls', namespace='fetch_data')), 
     url(r'^admin/', include(admin.site.urls)),
 ]

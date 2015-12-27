@@ -12,7 +12,7 @@
 import sys
 import os
 
-sys.path.append('/home/prashant/DJANGO_SCRAPY/projects/scraper_webapp')
+sys.path.append('/home/prashant/DJANGO_SCRAPY/projects/scrapage/scraper_webapp')
 os.environ['DJANGO_SETTINGS_MODULE'] = 'scraper_webapp.settings'
 
 
